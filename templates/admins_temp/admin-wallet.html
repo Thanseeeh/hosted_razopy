@@ -1,0 +1,84 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% load static %}
+
+{% block title %}Razopy-Admin-wallet{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h1 class="text-center mt-3">Admin's Wallet</h1>
+        <section class="py-5" style="background: #191c24; width: 90%; margin-left: 5%; margin-top: 2%;">
+            <div class="container px-4 px-lg-5 my-1">
+                <div class="row gx-4 gx-lg-5 align-items-center ms-2">
+                    <div class="col-md-5 col-10 mt-5 ms-4" style="background: #00456e; border-radius: 20px;">
+                        <h3 class="text-center mt-4">Sales status</h3>
+                        <h1 class="text-center mt-5">₹{{ sales_profit }}</h1>
+                    </div>
+                    <div class="col-md-5 col-10 mt-5 ms-4" style="background: #00456e; border-radius: 20px;">
+                        <h3 class="text-center mt-4">Commission status</h3>
+                        <h1 class="text-center mt-5">₹{{ commission_profit }}</h1>
+                    </div>
+                    <div class="col-md-5 col-10 mt-5 ms-4" style=" background: #00456e; border-radius: 20px;">
+                        <h3 class="text-center mt-4">Total Income</h3>
+                        <h1 class="text-center mt-5">₹{{ commission_and_sales_profit }}</h1>
+                    </div>
+                    <div class="col-md-5 col-10 mt-5 ms-4" style="background: #8b0000e3; border-radius: 20px;">
+                        <h3 class="text-center mt-4">Wallet Balance</h3>
+                        <h1 class="text-center mt-5">₹{{ balance}}</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <br></br>
+        <h1 class="text-center mt-5">Add/Redeem fund</h1>
+        <p class="text-center">Add and Redeem fund in the wallet.</p>
+        <section class="py-5" style="background: #191c24; width: 90%; margin-left: 5%; margin-top: 2%;">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <form method="POST" action="{% url 'add_funds' %}" style="margin-left: 25%; display: flex; flex-direction: column; width: 50%;">
+                        {% csrf_token %}
+                        <label for="amount">Amount (INR):</label>
+                        <input type="number" name="amount" style="height: 2.5em; border-radius: 10px" required><br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success mx-3 w-25">Add Funds</button>
+                            <a href="{% url 'redeem' %}" class="btn btn-danger w-25">Redeem</a>
+                        </div>
+                      </form>
+                </div>
+            </div>
+        </section>
+
+        <br></br>
+        <h1 class="text-center mt-5">Transaction History</h1>
+        <p class="text-center">Transaction history of Admin. commission, received transactions, paid transactions stored.</p>
+        <section class="py-5" style="background: #191c24; width: 90%; margin-left: 5%; margin-top: 2%;">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center" style="margin-left: 10%">
+                    {% if wallet.transaction_history %}
+                          {% for transaction in wallet.transaction_history reversed %}
+                            {% if 'Recharged amount' in transaction %}
+                              <div class="transaction w-75 mx-5 mt-2 text-success mt-3" style="background: black; height: 60px; border-radius: 20px; text-align: center; padding-top: 20px;">{{ transaction }}</div>
+                            {% elif 'Amount Redeemed' in transaction %}
+                              <div class="transaction w-75 mx-5 mt-2 text-danger mt-3" style="background: black; height: 60px; border-radius: 20px; text-align: center; padding-top: 20px;">{{ transaction }}</div>
+                            {% else %}
+                              <div class="transaction w-75 mx-5 mt-2 text-primary mt-3" style="background: black; height: 60px; border-radius: 20px; text-align: center; padding-top: 20px;">{{ transaction }}</div>
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          <p class="text-center text-white">No transactions found.</p>
+                        {% endif %}
+                </div>
+            </div>
+        </section>
+</div>
+
+
+<script>
+    var mylink=document.getElementById("admin_wallet")
+    mylink.classList.add("active")
+</script>
+
+{% endblock %}

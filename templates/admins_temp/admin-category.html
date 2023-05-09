@@ -1,0 +1,57 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% load static %}
+
+{% block title %} Razopy-Category-Management {% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h3 class="card-title text-center mt-5">Category management</h3>
+        <div class="card-body">
+            <form class="d-flex flex-column w-50 mx-auto mt-2" action="{% url 'category' %}" method="POST">
+                {% csrf_token %}
+                {{form.name}}
+                <input type="submit" value="Create" class="mb-5 text-white btn bg-primary bg-gradient w-25 mt-4">
+            </form>
+          </div>
+
+        <div class="row" style="width: 94%; margin-left: 3%">
+        <div class="col-12 grid-margin">
+            <div class="card">
+            <div class="card-body">
+                <div class="table-responsive" style="background: black; width: 80%; margin-left: 12%; border-radius: 20px">
+                <table class="table" style="text-align: center">
+                    <thead>
+                    <tr>
+                        <th> id</th>
+                        <th> Category Name </th>
+                        <th> Edit </th>
+                        <th> List/Unlist </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                        <td><span class="ps-2"> {{i.id}} </span></td>
+                        <td> {{i.name}} </td>
+                        <td><a class="btn btn-outline-primary" href="{% url 'edit' i.id %}">Edit</a></a></td>
+                        <td>
+                            {% if i.is_active%}
+                                <a class="btn btn-outline-danger mx-2" href="{% url 'unlist' i.id %}" onclick="return confirm('Unlist this category?')">Unlist</a>
+                            {% else %}
+                                <a class="btn btn-outline-success" href="{% url 'list' i.id %}" onclick="return confirm('List your category?')">List</a>
+                            {% endif %}
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

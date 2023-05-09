@@ -1,0 +1,24 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% block title %} Razopy-Edit News {% endblock %}
+
+{% block content %}
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <h3 class="card-title text-center mt-5">Edit News</h3>
+            <div class="row" style="width: 94%; margin-left: 3%">
+                <div class="col-12 grid-margin">
+                    <div class="card mt-5">
+                        <div class="card-body mt-3 mb-3">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                <a href="{% url 'news' %}" class="btn btn-light">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endblock %}

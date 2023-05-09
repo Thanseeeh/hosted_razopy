@@ -1,0 +1,74 @@
+{% extends 'users_temp/base.html' %}
+
+{% load static %}
+
+{% block title %}
+Razopy-Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <section class="h-100 gradient-custom-2">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100" style="width: 128%; margin-left: -14%;">
+                <div class="col col-lg-9 col-xl-7">
+                    <div class="card bg-white">
+                    <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+                        <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+                        <img src="{{user.profile_pic.url}}"
+                            alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                            style="width: 150px; z-index: 1">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark mb-3" data-mdb-ripple-color="dark" style="z-index: 1;">Edit profile</a>
+                        <a href="{% url 'wallet' %}" class="btn btn-outline-dark" data-mdb-ripple-color="dark" style="z-index: 1;">Wallet</a>
+                        </div>
+                        <div class="ms-3" style="margin-top: 100px;">
+                        <h4>{{user.username}}</h4>
+                        <p>{{user.email}}</p>
+                        <p>{{user.phone}}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                        <div class="d-flex justify-content-end text-center py-1">
+                        <div style="background: black; width: 120px; height: 70px; color: white; padding-top: 13px; border-radius: 15px; box-shadow: 2px 2px 10px #818181;">
+                            <p class="mb-1 h5">{{total_token}}</p>
+                            <p class="small mb-0">Total Tokens</p>
+                        </div>
+                        <div style="background: black; width: 120px; height: 70px; color: white; padding-top: 13px; border-radius: 15px; box-shadow: 2px 2px 10px #818181; margin-left: 15px">
+                            <p class="mb-1 h5">₹{{wallet.balance|floatformat:2}}</p>
+                            <p class="small mb-0">Total Balance</p>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 text-black">
+                        <div class="mb-5">
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <a href="{% url 'profile' %}" style="text-decoration: none; color: black"><p class="lead fw-normal mb-0">Owned Tokens</p></a>
+                        <a href="{% url 'profile_created' %}" style="text-decoration: none; color: black"><p class="lead fw-normal mb-0">Created Tokens</p></a>
+                        </div>
+                        
+                        <div class="row g-2">
+                            {% for i in tokens %}
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <a href="{% url 'single_item' i.id %}"><img src="{{ i.image.url}}" style="height: 276.55px" alt="image 1" class="w-100 rounded-3"></a>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<script>
+    var mylink=document.getElementById("profile")
+    mylink.classList.add("active")
+</script>
+
+{% endblock %}

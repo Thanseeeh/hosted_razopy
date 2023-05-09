@@ -1,0 +1,201 @@
+{% extends 'users_temp/base.html' %}
+
+{% load static %}
+
+{% block title %}
+Razopy-Home
+{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card-body py-0 px-0 px-sm-3">
+              <div class="row align-items-center">
+                <div class="col-4 col-sm-3 col-xl-2">
+                  <img src="static/images/dashboard/Group126@2x.png" class="gradient-corona-img img-fluid" alt="">
+                </div>
+                <div class="col-5 col-sm-7 col-xl-8 p-0 text-center mt-5">
+                  <h1 class="mb-1 mb-sm-0">Buy, Sell and Showcase Tokens</h4>
+                  <p class="mb-0 font-weight-normal d-none d-sm-block">Provide you the best experience in Digital art collections</p>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            {% for banner in banners %}
+              <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+            {% endfor %}
+          </ol>
+          <div class="carousel-inner">
+            {% for banner in banners %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img class="container-fluid" style="width: 100%; height: 480px; border-radius: 60px; opacity: 0.8" src="{{ banner.image.url }}" alt="{{ banner.heading }}">
+              </div>
+            {% endfor %}
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </a>
+        </div>        
+      </div>
+      <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card-body py-0 px-0 px-sm-3">
+              <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-xl-12 p-0 text-center mt-3">
+                  <h2 class="mb-1 mb-sm-0">Top collections</h2>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+
+        <div class="row mt-3" style="width: 88%; margin-left: 6%;">
+
+            {% for token in tokens %}
+              {% if token.category.is_active %}
+
+                <div class="col-xl-3 col-sm-6 grid-margin">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{% url 'single_item' token.id %}">
+                                <img src="{{ token.image.url }}" style="width: 100%; height: 276.2px; transition: transform 0.3s ease-in-out;" 
+                                    onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                            </a>
+                            <h3 class="mt-3">{{ token.name }}</h3>
+                            <div class="row">
+                                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                                    <div class="d-flex d-sm-block d-md-flex align-items-center">
+                                        <h4 class="mb-0">₹ {{ token.price }}</h4>
+                                        <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+                                    </div>
+                                <h6 class="text-muted font-weight-normal mt-1">Brand: {{ token.brand }}</h6>
+                                </div>
+                                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right" style="font-size: 26px;">
+                                    {% if user.is_authenticated %}
+                                        {% if token.id in liked_tokens %}
+                                            <a href="{% url 'dislike' token.id %}"><i class="mdi mdi-heart text-danger"></i></a>
+                                        {% else %}
+                                            <a href="{% url 'like' token.id %}"><i class="mdi mdi-heart-outline text-danger"></i></a>
+                                        {% endif %}
+                                
+                                        {% if token.owner.username != user.username %}
+                                            <a href="{% url 'addtocart' token.id %}"><i class="mdi mdi-cart-outline text-success"></i></a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>                                                                                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card-body py-0 px-0 px-sm-3">
+                  <div class="row align-items-center">
+                    <div class="col-12 col-sm-12 col-xl-12 p-0 text-center mt-1">
+                        <a class=" btn btn-primary create-new-button" href="{% url 'items' %}">View all</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card-body py-0 px-0 px-sm-3">
+                  <div class="row align-items-center">
+                    <div class="col-12 col-sm-12 col-xl-12 p-0 text-center mt-5">
+                      <h2 class="mb-1 mb-sm-0">Categories</h2>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-1" style="width: 70%; margin-left: 24%;">
+            <div class="col-xl-3 col-sm-6 grid-margin">
+                <div class="card" style="border-radius: 50%;">
+                    <div class="card-body">
+                        <a href="{% url 'categories' category='characters' %}"><img src="{% static 'img/category1.jpg' %}" style="width: 100%; border-radius: 50%; transition: transform 0.3s ease-in-out;" 
+                            onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    </div>
+                </div>
+                <h5 class="text-center mt-3">Characters</h5>
+            </div>
+            <div class="col-xl-3 col-sm-6 grid-margin">
+                <div class="card" style="border-radius: 50%;">
+                    <div class="card-body">
+                        <a href="{% url 'categories' category='sports' %}"><img src="{% static 'img/category2.jpg' %}" style="width: 100%; border-radius: 50%; transition: transform 0.3s ease-in-out;" 
+                            onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    </div>
+                </div>
+                <h5 class="text-center mt-3">Sports</h5>
+            </div>
+            <div class="col-xl-3 col-sm-6 grid-margin">
+                <div class="card" style="border-radius: 50%;">
+                    <div class="card-body">
+                        <a href="{% url 'categories' category='music' %}"><img src="{% static 'img/category3.jpg' %}" style="width: 100%; border-radius: 50%; transition: transform 0.3s ease-in-out;" 
+                            onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    </div>
+                </div>
+                <h5 class="text-center mt-3">Musics</h5>
+            </div>
+        </div>
+
+        <br class="mt-5">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card-body py-0 px-0 px-sm-3">
+                  <div class="row align-items-center">
+                    <div class="col-12 col-sm-12 col-xl-12 p-0 text-center mt-5">
+                      <h2 class="mb-1 mb-sm-0">News</h2>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-1" style="width: 90%; margin-left: 5%"> 
+            {% for i in news %}
+            <div class="col-xl-6 col-md-6 col-sm-6 grid-margin">
+                <div class="card mt-3">
+                    <img src="{{ i.image.url }}" style="width: 100%; height: 400px">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  var mylink=document.getElementById("home")
+  mylink.classList.add("active")
+</script>
+
+{% endblock %}

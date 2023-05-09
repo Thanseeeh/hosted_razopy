@@ -1,0 +1,132 @@
+{% extends 'users_temp/base.html' %}
+
+{% load static %}
+
+{% block title %}
+Razopy-Categories
+{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container position-sticky z-index-sticky top-0">
+            <div class="row">
+              <div class="col-12">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4" style="border-radius: 40px;">
+                  <div class="container-fluid pe-0">
+                      <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon mt-2"></span>
+                      </button>
+                      <div class="collapse navbar-collapse" id="navigation">
+                          <ul class="navbar-nav mx-auto ms-xl-auto me-xl-7">
+                              <li class="nav-item">
+                                  <a class="nav-link text-white ms-3" aria-current="page" href="{% url 'categories' category='characters' %}" id="characters">
+                                      <i class="fa fa-chart-pie opacity-6 text-dark me-1"></i>
+                                      Characters
+                                  </a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link text-white ms-3" href="{% url 'categories' category='sports' %}" id="sports">
+                                      <i class="fa fa-user opacity-6 text-dark me-1"></i>
+                                      Sports
+                                  </a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link text-white ms-3" href="{% url 'categories' category='music' %}" id="music">
+                                      <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                                      Musics
+                                  </a>
+                              </li>
+                              <li class="nav-item dropdown">
+                                  <a class="nav-link dropdown-toggle text-white ms-3" href="#" id="sort-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Sort by
+                                  </a>
+                                  <ul class="dropdown-menu" aria-labelledby="sort-dropdown">
+                                      <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort=name">Name</a></li>
+                                      <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort=price_asc">Price: Low to High</a></li>
+                                      <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort=price_desc">Price: High to Low</a></li>
+                                  </ul>
+                              </li>
+                              <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white ms-3" href="#" id="amount-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Filter
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="amount-dropdown">
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}">All</a></li>
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}&amount=lt5000">Below 5000</a></li>
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}&amount=5000_10000">5000 - 10000</a></li>
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}&amount=10000_15000">10000 - 15000</a></li>
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}&amount=15000_20000">15000 - 20000</a></li>
+                                    <li><a class="dropdown-item text-light" href="{% url 'categories' category=category %}?sort={{sort}}&amount=gte20000">Above 20000</a></li>
+                                </ul>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+                </nav>
+                <!-- End Navbar -->
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <div class="row mt-5">
+              {% for token in tokens %}
+                <div class="col-sm-4 grid-margin w-100">
+                  <div class="row align-items-center">
+                      <div class="table-responsive col-md-8 col-sm-8" style="width: 90%; background: #191c24; border-radius: 15px; margin-left: 5%">
+                          <table class="table" style="text-align: center; color: white">
+                              <thead>
+                                  <tr>
+                                      <th> token </th>
+                                      <th> Name </th>
+                                      <th> Owner </th>
+                                      <th> Author </th>
+                                      <th> Prize </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td style="width: 20%"><a href="{% url 'single_item' token.id %}"><img src="{{ token.image.url }}" style="width: 100px; height: 100px; border-radius: 8px;"
+                                              class="img-fluid" alt="Generic placeholder image"></a></td>
+                                      <td style="width: 20%"><span class="ps-1">{{ token.name }}</span></td>
+                                      <td style="width: 20%">{{ token.owner.username }}</td>
+                                      <td style="width: 20%">{{ token.author.username }}</td>
+                                      <td class="font-weight-bold" style="width: 20%"> ₹{{ token.price }} </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>          
+          </div>
+
+</div>
+
+
+
+<script>
+  var mylink=document.getElementById("categories")
+  mylink.classList.add("active")
+</script>
+
+<script>
+  var mylink=document.getElementById("characters")
+  mylink.classList.add("active")
+</script>
+
+<script>
+  var mylink=document.getElementById("sports")
+  mylink.classList.add("active")
+</script>
+
+<script>
+  var mylink=document.getElementById("musics")
+  mylink.classList.add("active")
+</script>
+
+{% endblock %}

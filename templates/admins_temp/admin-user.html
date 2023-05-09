@@ -1,0 +1,69 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% load static %}
+
+{% block title %} Razopy-Admin-User-Control{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h1 style="text-align: center; margin-top: 1.5%">User Control</h1>
+      <div class="row" style="width: 94%; margin-left: 3%">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+                <form method="GET" action="{% url 'admin_user_control' %}">
+                    <div class="bg-glass d-flex container-fluid">
+                        <h4 class="card-title mb-4" style="margin-left:-20px">Users:</h4>
+                        <input type="text" name="q" placeholder="Search users..." style="height: 30px; margin-top: -3px; background: transparent; color: #c7c7c7; border-radius: 8px; border: 0.5px solid #2c2e33; margin-left: 10px">
+                        <button type="submit" class="btn btn-outline-primary" style="height: 30px; margin-top: -3px; margin-left: 5px; border-radius: 8px;">Search</button>
+                    </div>
+                </form>
+              <div class="table-responsive">
+                <table class="table" style="text-align: center">
+                  <thead>
+                    <tr>
+                      <th> id</th>
+                      <th> Username </th>
+                      <th> Email </th>
+                      <th> Phone </th>
+                      <th> is_active </th>
+                      <th> Last_login </th>
+                      <th> Controls </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in data %}
+                        <tr>
+                        <td><span class="ps-2"> {{i.id}} </span></td>
+                        <td> {{i.username}} </td>
+                        <td> {{i.email}} </td>
+                        <td> {{i.phone}} </td>
+                        <td> {{i.is_active}} </td>
+                        <td> {{i.date_joined}} </td>
+                        <td>
+                            {% if i.is_active%}
+                                <a class="btn btn-outline-danger" href="{% url 'block_user' i.id %}" onclick="return confirm('Are you sure you want to block this user?')">block</a>
+                            {% else %}
+                                <a class="btn btn-outline-success mx-2" href="{% url 'unblock_user' i.id %}" onclick="return confirm('Unblock the User?')">unblock</a>
+                            {% endif %}
+                        </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      var mylink=document.getElementById("admin_user_control")
+      mylink.classList.add("active")
+    </script>
+
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'users_temp/base.html' %}
+
+
+{% load static %}
+
+{% block title %}Razopy-SingleItem-Checkout{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+        <div class="content-wrapper">
+            <div class="form-controls">
+
+                {% for message in messages %}
+                <div class="alert alert-danger w-50 text-center" role="alert" style="margin-left: 25%">
+                    {{message}}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="container mt-5" style="background: #191c24; border-radius: 20px">
+                <div class="py-5 text-center">
+                <h2>Purchase Token</h2>
+                </div>
+                
+                {% comment %} cart details {% endcomment %}
+                <div class="row mx-5">
+                <div class="col-md-4 order-md-2 mb-4 w-100">
+                    <ul class="list-group mb-3">
+                        <div class="row mx-5">
+                            <div class="col-md-4 order-md-2 mb-4 w-100">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-muted">Token Details</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <img src="{{ token.image.url }}" style="width: 70px; height: 70px; border-radius: 5px">
+                                        <div>
+                                            <h6 class="my-0 mt-3">Name : {{ token.name }}</h6>
+                                            <small class="text-muted">Brand : {{ token.brand }}</small>
+                                        </div>
+                                        <span class="text-muted mt-4">₹{{ token.price }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <div class="text-success">
+                                            <h6 class="my-0">Commission</h6>
+                                        </div>
+                                        <span class="text-success">+ ₹{{ commission }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between mt-2">
+                                        <span>Total (INR)</span>
+                                        <strong>₹{{ total }}</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+                </div>
+
+                {% comment %} User details {% endcomment %}
+                <div class="row mt-5" style="width: 92.5%; margin-left: 3.5%;">
+                    <div class="col-md-4 order-md-2 mb-4 w-50">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Your Details</span>
+                        </h4>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div class="d-flex">
+                                    <div class="mt-3" style="margin-left: -50px">
+                                        <img src="{{ user.profile_pic.url }}" class="mx-5 mb-3 rounded-circle" style="width: 80px; height: 80px">
+                                        <table>
+                                            <td class="d-flex">
+                                                <h6 class="my-0 text-secondary mx-5">Name:</h6>
+                                                <h6 class="my-0">{{user.username}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-3 text-secondary mx-5">Email:</h6>
+                                                <h6 class="my-3">{{user.email}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-1 text-secondary mx-5">Phone:</h6>
+                                                <h6 class="my-1">{{user.phone}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-3 text-secondary mx-5">Joined:</h6>
+                                                <h6 class="my-3">{{user.date_joined}}</h6>
+                                            </td>
+                                        </table>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {% comment %} Owner details {% endcomment %}
+                    <div class="col-md-4 order-md-2 mb-4 w-50">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Owner Details</span>
+                        </h4>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div class="d-flex">
+                                    <div class="mt-3" style="margin-left: -50px">
+                                        <img src="{{ token.owner.profile_pic.url }}" class="mx-5 mb-3 rounded-circle" style="width: 80px; height: 80px">
+                                        <table>
+                                            <td class="d-flex">
+                                                <h6 class="my-0 text-secondary mx-5">Name:</h6>
+                                                <h6 class="my-0">{{token.owner.username}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-3 text-secondary mx-5">Email:</h6>
+                                                <h6 class="my-3">{{token.owner.email}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-1 text-secondary mx-5">Phone:</h6>
+                                                <h6 class="my-1">{{token.owner.phone}}</h6>
+                                            </td>
+                                            <td class="d-flex">
+                                                <h6 class="my-3 text-secondary mx-5">Joined:</h6>
+                                                <h6 class="my-3">{{token.owner.date_joined}}</h6>
+                                            </td>
+                                        </table>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+    
+        </div>
+        <div style="width: 94%; text-align: end;">
+            <form method="POST" action="{% url 'complete_transaction' token.id%}">
+                {% csrf_token %}
+                <input type="hidden" id="commission" name="commission" value="{{ commission }}">
+                <input type="hidden" id="total" name="total" value="{{ total }}">
+                <button type="submit" class="mb-5 btn btn-primary btn-lg">Complete Transaction</a>
+            </form>
+        </div>
+</div>
+
+{% endblock %}

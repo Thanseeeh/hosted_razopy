@@ -1,0 +1,292 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% load static %}
+
+{% block title %} Razopy-Admin-Home {% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+        <div class="col-xl-6 col-sm-6 grid-margin stretch-card mt-5">
+          <div class="card" style="border-radius: 40px;">
+            <div class="container col-xl-12 col-sm-12" style="position: absolute; width: 100%; margin-top: 2rem; font-size: 1.7vw;">
+              <h2>Creativity Produce Quality!</h2>
+              <p>Digital marketplace for digital art collections</p>
+              <a href="{% url 'admin_items' %}" class="btn btn-danger btn-lg" style="margin-right: 1rem; font-weight: bold">Explore</a>
+              <a href="{% url 'create' %}" class="btn btn-primary btn-lg" style="font-weight: bold">Create</a>
+            </div>
+            <img src="{% static 'img/admin-home1.jpeg' %}" style="border-radius: 40px">
+          </div>
+        </div>
+        <div class="col-xl-6 col-sm-6 grid-margin stretch-card mt-5">
+          <div class="card" style="border-radius: 40px;  background: #3b3c51;">
+              <div class="container col-xl-12 col-sm-12" style="position: absolute; width: 100%; margin-top: 2rem; font-size: 1.7vw; text-align: end;">
+                <h2>Amazing Growth!</h2>
+                <p>Explore through your digital wallet</p>
+                <a href="{% url 'admin_items' %}" class="btn btn-danger btn-lg" style="margin-right: 1rem; font-weight: bold">Explore</a>
+                <a href="{% url 'admin_wallet' %}" class="btn btn-primary btn-lg" style="font-weight: bold">Wallet</a>
+              </div>
+              <img src="{% static 'img/admin-home2.jpg' %}" style="border-radius: 40px; width:56%; ">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Admin's profile</h4>
+              <img src="{{user.profile_pic.url}}"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2 mx-4"
+                style="width: 150px; z-index: 1">
+                <div>
+                  <a href="{% url 'edit_profile' %}" class="btn btn-primary mx-2" data-mdb-ripple-color="dark" style="z-index: 1;">Edit profile</a>
+                  <a href="{% url 'admin_wallet' %}" class="btn btn-primary" data-mdb-ripple-color="dark" style="z-index: 1;">Wallet</a>
+                </div>
+              <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mx-3">Brand: </h5>
+                </div>
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mb-0">{{user.username}}</h5>
+                </div>
+              </div>
+              <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-1 px-4 px-md-3 px-xl-4 rounded mt-1">
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mx-3">Email: </h5>
+                </div>
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mb-0">{{user.email}}</h5>
+                </div>
+              </div>
+              <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-1 px-4 px-md-3 px-xl-4 rounded mt-3">
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mx-3">Phone: </h5>
+                </div>
+                <div class="text-md-center text-xl-left">
+                  <h5 class="mb-0">{{user.phone}}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-4 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h5>Sales</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">₹{{ sales_profit }}</h2>
+                    <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+                  </div>
+                  <h6 class="text-muted font-weight-normal"> 3.5% of the sales will be commission</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-biohazard text-success ms-auto"></i>
+                </div>
+              </div>
+              <br><br>
+              <h5 class="mt-5">Purchase</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">₹{{ purchase_amount }}</h2>
+                    <p class="text-danger ms-2 mb-0 font-weight-medium">-3.5% </p>
+                  </div>
+                  <h6 class="text-muted font-weight-normal">3.5% of that will be added into the commission.</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-wallet-travel text-danger ms-auto"></i>
+                </div>
+              </div>
+              <div class="text-center">
+                <h6 class="text-muted font-weight-normal mt-5">more details in Admin's wallet</h6>
+                <a href="{% url 'admin_wallet' %}" class="btn btn-info">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-4 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h5>Tokens</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">{{ total_tokens }}</h2>
+                  </div>
+                  <h6 class="text-muted font-weight-normal">tokens in the marketplace</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-calendar-multiple-check text-danger ms-auto"></i>
+                </div>
+              </div>
+              <br><br>
+              <h5 class="mt-5">Users</h5>
+              <div class="row">
+                <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                  <div class="d-flex d-sm-block d-md-flex align-items-center">
+                    <h2 class="mb-0">{{ total_users }}</h2>
+                  </div>
+                  <h6 class="text-muted font-weight-normal">User accounts available in<br> the marketplace</h6>
+                </div>
+                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                  <i class="icon-lg mdi mdi-account-multiple text-success ms-auto"></i>
+                </div>
+              </div>
+              <div class="text-center">
+                <h6 class="text-muted font-weight-normal mt-5">more details in User controls</h6>
+                <a href="{% url 'admin_user_control' %}" class="btn btn-info">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Transaction Details</h4>
+              <div>
+                <canvas id="myChart" style="margin-top: 100px; height: 400px;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex flex-row justify-content-between">
+                <h4 class="card-title mb-1">Token details</h4>
+              </div>
+              <div style="height: 400px;">
+                <canvas id="myChart2" style="margin-left: 30%"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row ">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Sales Report</h4>
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th class="text-light">Type</th>
+                              <th class="text-light">Description</th>
+                              <th class="text-light">Amount</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for row in rows %}
+                          <tr>
+                              <td>{{ row.type }}</td>
+                              <td>{{ row.description }}</td>
+                              <td>{{ row.amount }}</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+            </div>                    
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+<script>
+  var mylink=document.getElementById("admin_home")
+  mylink.classList.add("active")
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Sales', 'Commission', 'Profit', 'Balance', 'Purchase'],
+      datasets: [{
+        label: 'Admin Dashboard',
+        data: [
+          {{ sales_profit }},
+          {{ commission_profit }},
+          {{ commission_and_sales_profit }},
+          {{ balance }},
+          {{ purchase_amount }}
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  // Define configuration for the polar area chart
+  var config2 = {
+    type: 'polarArea',
+    data: {
+      datasets: [{
+        label: 'Token Count by Category',
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1,
+        data: [
+          {% for category in categories %}
+            {{ category.token_set.count }},
+          {% endfor %}
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Token Count by Category'
+      }
+    }
+  };
+
+  // Instantiate the polar area chart
+  var ctx2 = document.getElementById('myChart2').getContext('2d');
+  var myChart2 = new Chart(ctx2, config2);
+</script>
+
+
+
+{% endblock%}

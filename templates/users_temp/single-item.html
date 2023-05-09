@@ -1,0 +1,61 @@
+{% extends 'users_temp/base.html' %}
+
+{% load static %}
+
+{% block title %}Razopy-Single view{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="form-controls">
+
+            {% for message in messages %}
+            <div class="alert alert-danger w-50 text-center" role="alert" style="margin-left: 25%">
+                {{message}}
+            </div>
+            {% endfor %}
+        </div>
+        <section class="py-5" style="background: #191c24; width: 90%; margin-left: 5%; margin-top: 5%;">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="img-fluid card-img-top mb-5 mb-md-0" src="{{ product.image.url }}" alt="..." / style="width: 500px; height: 500px; border-radius: 20px"></div>
+                    <div class="col-md-6">
+                        <div class="small mb-1">Token id: {{ product.id }}</div>
+                        <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+                        <div class="small mb-4">{{ product.brand }}</div>
+                        <div class="fs-5 mb-5">
+                            <span style="font-size: 22px; font-weight: 500;">₹{{ product.price }}</span>
+                        </div>
+                        <div class="small mb-3">Category: {{ product.category }}</div>
+                        <p class="lead">{{ product.description}}</p>
+                        <div class="d-flex justify-content-between mt-5 mb-1">
+                            <p>Owner: {{ product.owner.username }}</p>
+                            <p>Author: {{ product.author.username }}</p>
+                        </div>
+                        {% if product.owner.username == user.username %}
+
+                            <div class="d-flex">
+                                {% if product.is_active %}
+                                    <a href="{% url 'cancel_sale' product.id %}" class="btn btn-danger large" >Cancel Sale</a>
+                                {% else %}
+                                    <a href="{% url 'sell' product.id %}" class="btn btn-primary large" >Sell Token</a>
+                                {% endif %}
+                                <a href="{% url 'edit_token' product.id %}" class="btn btn-success large mx-3" >Edit Token</a>
+                            </div>
+
+                        {% else %}
+
+                            <div class="d-flex">
+                                <a href="{% url 'addtocart' product.id %}" class="btn btn-primary large" >Add to cart</a>
+                                <a href="{% url 'checkout_single' product.id%}" class="btn btn-primary large mx-4" >Buy Token</a>
+                            </div>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+</div>
+
+{% endblock %}

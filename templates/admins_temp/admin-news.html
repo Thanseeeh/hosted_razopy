@@ -1,0 +1,76 @@
+{% extends 'admins_temp/admin-base.html' %}
+
+{% load static %}
+
+{% block title %} Razopy-News-Management {% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h3 class="card-title text-center mt-5">News management</h3>
+        <div class="row" style="width: 94%; margin-left: 3%">
+            <div class="col-12 grid-margin">
+                <div class="card mt-5">
+                    <div class="card-body mt-3 mb-3">
+                        <div class="table-responsive" style="background: black; width: 80%; margin-left: 12%; border-radius: 20px">
+                            <table class="table" style="text-align: center">
+                                <thead>
+                                    <tr>
+                                        <th> id</th>
+                                        <th> News</th>
+                                        <th> Image </th>
+                                        <th> Edit </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in data %}
+                                        <tr>
+                                            <td><span class="ps-2"> {{i.id}} </span></td>
+                                            <td> {{i.heading}} </td>
+                                            <td><img src="{{ i.image.url }}"></td>
+                                            <td><a class="btn btn-outline-primary" href="{% url 'edit_news' i.id %}">Edit</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="card-title text-center mt-5">Banner management</h3>
+        <div class="row" style="width: 94%; margin-left: 3%">
+            <div class="col-12 grid-margin">
+                <div class="card mt-5">
+                    <div class="card-body mt-3 mb-3">
+                        <div class="table-responsive" style="background: black; width: 80%; margin-left: 12%; border-radius: 20px">
+                            <table class="table" style="text-align: center">
+                                <thead>
+                                    <tr>
+                                        <th> id</th>
+                                        <th> Title</th>
+                                        <th> Image </th>
+                                        <th> Edit </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in banner_data %}
+                                        <tr>
+                                            <td><span class="ps-2"> {{i.id}} </span></td>
+                                            <td> {{i.heading}} </td>
+                                            <td><img src="{{ i.image.url }}"></td>
+                                            <td><a class="btn btn-outline-primary" href="{% url 'edit_banner' i.id %}">Edit</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}
