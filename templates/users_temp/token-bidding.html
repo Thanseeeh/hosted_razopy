@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-Razopy-items
+Razopy-Bid-Items
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@ Razopy-items
         {% for message in messages %}
 
         <div class="alert alert-success" style="text-align: center; width: 41%; margin-left: 32%;">
-          Token is successfully added into <a href="{% url 'cart' %}" class="alert-link">Cart</a>. Go and check it out.
+          Token is successfully Bidded.
         </div>
 
         {% endfor %}
@@ -49,8 +49,8 @@ Razopy-items
                   <img src="static/images/dashboard/Group126@2x.png" class="gradient-corona-img img-fluid" alt="">
                 </div>
                 <div class="col-5 col-sm-7 col-xl-8 p-0 text-center mt-5">
-                  <h1 class="mb-1 mb-sm-0" id="explore">Explore in token market</h4>
-                  <p class="mb-0 font-weight-normal d-none d-sm-block">collections will be unique so, crab your token</p>
+                  <h1 class="mb-1 mb-sm-0" id="explore">Explore in Bidding Auction Market</h4>
+                  <p class="mb-0 font-weight-normal d-none d-sm-block">collections will be unique so, bid for the tokens</p>
                 </div>
               </div>
             </div>
@@ -59,33 +59,38 @@ Razopy-items
 
       <div class="row mt-5" style="width: 88%; margin-left: 6%;">
 
+          {% if tokens %}
             {% for token in tokens %}
               {% if token.category.is_active %}
                 <div class="col-sm-6 col-md-4 grid-margin">
                     <div class="card">
                         <div class="card-body">
-                            <a href="{% url 'single_item' token.id %}"><img src="{{ token.image.url }}" style="width: 100%; height: 394.2px; transition: transform 0.3s ease-in-out;" 
+                            <a href="{% url 'bid_single_item' token.id %}"><img src="{{ token.image.url }}" style="width: 100%; height: 394.2px; transition: transform 0.3s ease-in-out;" 
                               onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                             </a>
                             <h3 class="mt-3">{{token.name}}</h3>
                             <div class="row">
                                 <div class="col-8 col-sm-12 col-xl-8 my-auto">
                                     <div class="d-flex d-sm-block d-md-flex align-items-center">
-                                        <h4 class="mb-0">₹{{token.price|floatformat:2}}</h4>
+                                        <h4 class="mb-0">₹{{token.highest_price|floatformat:2}}</h4>
                                         <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
                                     </div>
                                 <h6 class="text-muted font-weight-normal mt-1">Brand: {{token.brand}}</h6>
+                                <div class="timer" data-remaining="{{ token.time_remaining }}">
+                                  <div class="countdown-box">
+                                    <span class="countdown-hours"></span>
+                                    <span class="countdown-label">hours</span>
+                                    <span class="countdown-minutes"></span>
+                                    <span class="countdown-label">minutes</span>
+                                    <span class="countdown-seconds"></span>
+                                    <span class="countdown-label">seconds</span>
+                                  </div>
+                                </div>
                                 </div>
                                 <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right" style="font-size: 26px;">
-                                  {% if token.id in liked_tokens %}
-                                      <a href="{% url 'dislike' token.id %}"><i class="mdi mdi-heart text-danger"></i></a>
-                                  {% else %}
-                                      <a href="{% url 'like' token.id %}"><i class="mdi mdi-heart-outline text-danger"></i></a>
-                                  {% endif %}
-                              
                                   {% if token.owner.username == user.username %}
                                   {% else %}
-                                      <a href="{% url 'addtocart' token.id %}"><i class="mdi mdi-cart-outline text-success"></i></a>
+                                      <a href="{% url 'bid_single_item' token.id %}" class="btn btn-primary">Bid Token</a>
                                   {% endif %}
                               </div>
                             </div>
@@ -94,13 +99,64 @@ Razopy-items
                 </div>
               {% endif %}  
             {% endfor %}
+          {% else %}
+            <div class="text-center">
+                <img src="{% static 'img/empty_page.png' %}" alt="Empty Page">
+                <h3 style="color: #d10f2a">No bidding tokens in the market.</h3>
+            </div>
+          {% endif %}
         
       </div>
     </div>
 
+      <style>
+        .timer {
+          position: relative;
+        }
+        .countdown-box {
+          margin-top: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 150%;
+          height: 100%;
+          background-color: #0090e7;
+          color: #fff;
+          font-size: 1.5rem;
+          font-weight: bold;
+          text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+          border-radius: 5px;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+        .countdown-label {
+          margin: 0 10px;
+          font-size: 0.8rem;
+        }
+      </style>
 
       <script>
         var mylink=document.getElementById("token_bidding")
         mylink.classList.add("active")
       </script>
+
+      <script>
+        var timers = document.querySelectorAll('.timer');
+        setInterval(function() {
+          timers.forEach(function(timer) {
+            var remaining = parseInt(timer.dataset.remaining);
+            if (remaining > 0) {
+              var hours = Math.floor(remaining / 3600);
+              var minutes = Math.floor((remaining % 3600) / 60);
+              var seconds = remaining % 60;
+              timer.querySelector('.countdown-hours').textContent = hours.toString().padStart(2, '0');
+              timer.querySelector('.countdown-minutes').textContent = minutes.toString().padStart(2, '0');
+              timer.querySelector('.countdown-seconds').textContent = seconds.toString().padStart(2, '0');
+              timer.dataset.remaining = remaining - 1;
+            } else {
+              timer.querySelector('.countdown-box').textContent = 'Bidding closed';
+            }
+          });
+        }, 1000);
+      </script>     
 {% endblock %}

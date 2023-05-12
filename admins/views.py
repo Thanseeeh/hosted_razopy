@@ -29,22 +29,25 @@ def admin_home(request):
                 if 'Received' in transaction:
                     if 'for token' in transaction:
                         # Received profit from token sale
-                        amount = float(transaction.split('Received ')[1].split(' for token')[0])
-                        sales_profit += amount
-                        rows.append({'type': 'Sale', 'description': f'Token Sale ({transaction})', 'amount': amount})
+                        if 'Received ' in transaction:
+                            amount = float(transaction.split('Received ')[1].split(' for token')[0])
+                            sales_profit += amount
+                            rows.append({'type': 'Sale', 'description': f'Token Sale ({transaction})', 'amount': amount})
                     else:
                         # Received commission
-                        amount = float(transaction.split('Received ')[1].split(' commission')[0])
-                        commission_profit += amount
-                        commission_and_sales_profit += amount
-                        rows.append({'type': 'Commission', 'description': f'Commission ({transaction})', 'amount': amount})
+                        if 'Received ' in transaction:
+                            amount = float(transaction.split('Received ')[1].split(' commission')[0])
+                            commission_profit += amount
+                            commission_and_sales_profit += amount
+                            rows.append({'type': 'Commission', 'description': f'Commission ({transaction})', 'amount': amount})
                 else:
                     # Paid for token purchase
-                    amount = float(transaction.split('Paid ')[1].split(' for token')[0])
-                    purchase_amount += amount
-                    commission_and_sales_profit -= amount
-                    rows.append({'type': 'Purchase', 'description': f'Token Purchase ({transaction})', 'amount': amount})
-            except ValueError:
+                    if 'Paid ' in transaction and ' for token' in transaction:
+                        amount = float(transaction.split('Paid ')[1].split(' for token')[0])
+                        purchase_amount += amount
+                        commission_and_sales_profit -= amount
+                        rows.append({'type': 'Purchase', 'description': f'Token Purchase ({transaction})', 'amount': amount})
+            except (ValueError, IndexError):
                 pass
 
         commission_and_sales_profit = sales_profit + commission_profit
@@ -64,6 +67,7 @@ def admin_home(request):
         return render(request, 'admins_temp/admin-home.html', context)
     else:
         return redirect('admin_login')
+
 
 
 

@@ -1,0 +1,159 @@
+{% extends 'users_temp/base.html' %}
+
+{% load static %}
+
+{% block title %}Razopy-Bid-Single view{% endblock %}
+
+{% block content %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="form-controls">
+
+            {% for message in messages %}
+            <div class="alert alert-danger w-50 text-center" role="alert" style="margin-left: 25%">
+                {{message}}
+            </div>
+            {% endfor %}
+        </div>
+        <section class="py-5" style="background: #191c24; width: 90%; margin-left: 5%; margin-top: 5%;">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="img-fluid card-img-top mb-5 mb-md-0" src="{{ product.image.url }}" alt="..." / style="width: 500px; height: 500px; border-radius: 20px"></div>
+                    <div class="col-md-6">
+                        <div class="small mb-1">Token id: {{ product.id }}</div>
+                        <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+                        <div class="small mb-4">{{ product.brand }}</div>
+                        {% if product.price == product.highest_price %}
+                            <div class="fs-5 mb-5">
+                                <span style="font-size: 22px; font-weight: 500;">₹{{ product.price }}</span>
+                            </div>
+                        {% else %}
+                            <div class="fs-5 mb-5 d-flex justify-content-between">
+                                <div>
+                                    <p class="mb-0">Bidded Amount:</p>
+                                    <span style="font-size: 22px; font-weight: 500;">₹{{ product.highest_price }}</span>
+                                </div>
+                                <div>
+                                    <p class="text-danger mb-0">First Price:</p>
+                                    <span style="font-size: 16px; font-weight: 500;" class="text-danger">₹{{ product.price }}</span>
+                                </div>
+                                <div>
+                                    <p class="mb-0" style="color: #00a6ed">Demand:</p>
+                                    <span style="font-size: 16px; font-weight: 500; color: #00a6ed;">⬆️ {{ demand|floatformat:0 }}</span>
+                                </div>
+                                <div>
+                                    <p class="mb-0" style="color: #cb8e13">Bidder:</p>
+                                    <span style="font-size: 16px; font-weight: 500; color: #cb8e13;">{{ product.bidded_user.username }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="small mb-3">Category: {{ product.category }}</div>
+                        <p class="lead">{{ product.description}}</p>
+                        <div class="d-flex justify-content-between mt-5 mb-1">
+                            <p>Owner: {{ product.owner.username }}</p>
+                            <p>Author: {{ product.author.username }}</p>
+                        </div>
+                        {% if product.owner.username == user.username %}
+
+                            <div class="d-flex">
+                                {% if product.time_remaining > 0 %}
+                                    {% if product.is_active %}
+                                        <a href="{% url 'cancel_bid' product.id %}" class="btn btn-danger large" onclick="return confirm('Are you sure you want to Cancel Bidding?')">Cancel Bidding</a>
+                                    {% else %}
+                                        <a href="{% url 'bid' product.id %}" class="btn btn-primary large" >Bid Token</a>
+                                    {% endif %}
+                                {% elif product.price == product.highest_price%}
+                                    <a href="{% url 'bid' product.id %}" class="btn btn-primary large" >Bid Token</a>
+                                {% else %}
+                                    {% if product.price != product.highest_price %}
+                                        <a href="{% url 'accept_bid' product.id %}" class="btn btn-success large" >Accept Bid</a>
+                                        <a href="{% url 'cancel_bid' product.id %}" class="btn btn-danger large mx-3" onclick="return confirm('Are you sure you want to Reject the bid?')">Reject Bid</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                        {% else %}
+
+                            {% if product.time_remaining > 0 %}
+                                <div class="d-flex">
+                                    <form action="{% url 'bidding' product.id%}" method="post">
+                                        {% csrf_token %}
+                                        <input type="number" placeholder="bid amount" name="bid" Required>
+                                        <input type="submit" class="btn btn-primary large mx-3" value="Bid Token">
+                                    </form>
+                                </div>
+                            {% endif %}
+
+                        {% endif %}
+
+                        {% if product.is_active %}
+                            <div class="timer" data-remaining="{{ product.time_remaining }}">
+                                <div class="countdown-box">
+                                <span class="countdown-hours"></span>
+                                <span class="countdown-label">hours</span>
+                                <span class="countdown-minutes"></span>
+                                <span class="countdown-label">minutes</span>
+                                <span class="countdown-seconds"></span>
+                                <span class="countdown-label">seconds</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="countdown-box">
+                                <h3>Start Bidding</h3>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+</div>
+
+
+<style>
+    .timer {
+      position: relative;
+    }
+    .countdown-box {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      background-color: #0090e7;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .countdown-label {
+      margin: 0 10px;
+      font-size: 0.8rem;
+    }
+</style>
+
+<script>
+    var timers = document.querySelectorAll('.timer');
+    setInterval(function() {
+      timers.forEach(function(timer) {
+        var remaining = parseInt(timer.dataset.remaining);
+        if (remaining > 0) {
+          var hours = Math.floor(remaining / 3600);
+          var minutes = Math.floor((remaining % 3600) / 60);
+          var seconds = remaining % 60;
+          timer.querySelector('.countdown-hours').textContent = hours.toString().padStart(2, '0');
+          timer.querySelector('.countdown-minutes').textContent = minutes.toString().padStart(2, '0');
+          timer.querySelector('.countdown-seconds').textContent = seconds.toString().padStart(2, '0');
+          timer.dataset.remaining = remaining - 1;
+        } else {
+          timer.querySelector('.countdown-box').textContent = 'Bidding closed';
+        }
+      });
+    }, 1000);
+</script>   
+
+{% endblock %}

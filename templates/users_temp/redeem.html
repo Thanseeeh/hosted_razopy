@@ -90,7 +90,7 @@
                     {% csrf_token %}
                     <label for="amount">Amount (INR):</label>
                     <input type="number" name="amount" style="height: 2.5em; border-radius: 10px" required>
-                    <button type="submit" name="redeem" class="btn btn-danger">Redeem</button>
+                    <button type="submit" name="redeem" class="btn btn-danger" onclick="return confirm('Confirm redeem!!')">Redeem</button>
                   </form>
                 </div>
                 

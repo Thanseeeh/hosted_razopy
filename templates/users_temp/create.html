@@ -203,6 +203,14 @@
                 <span class="menu-title text-light">Items</span>
               </a>
             </li>
+            <li class="nav-item menu-items" id="token_bidding">
+              <a class="nav-link" href="{% url 'token_bidding' %}">
+                <span class="menu-icon">
+                  <i class="mdi mdi-alarm-plus"></i>
+                </span>
+                <span class="menu-title text-light">Bidding Auction</span>
+              </a>
+            </li>
             <li class="nav-item menu-items">
               <a class="nav-link" href="{% url 'categories' %}">
                 <span class="menu-icon">
@@ -364,7 +372,10 @@
                 {{ form.category }}<br>
                 <label>Token upload</label>
                 {{ form.image }}<br>
-                <input type="submit" value="Create" class="mb-5 text-white btn bg-primary bg-gradient w-25">
+                <div>
+                <button type="submit" name="create" class="mb-5 text-white btn bg-primary bg-gradient w-25">Create</button>
+                <button type="submit" name="create-bid" class="mb-5 text-white btn bg-success bg-gradient w-25 ms-3">Create Bidding</button>
+                </div>
             </form>
           </div>
         </div>

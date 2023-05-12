@@ -69,7 +69,7 @@
                                         <td><span class="ps-1"> {{ i.cart_items.name }} </span></td>
                                         <td> {{ i.cart_items.owner.username }} </td>
                                         <td> {{ i.cart_items.author.username }} </td>
-                                        <td class="font-weight-bold"> ${{ i.cart_items.price }} </td>
+                                        <td class="font-weight-bold"> ₹ {{ i.cart_items.price }} </td>
                                         <td><a class="btn btn-outline-danger mx-2" href="{% url 'remove_item' i.id %}" onclick="return confirm('Remove from cart?')">delete</a></td>
                                         </tr>
                                   </tbody>
@@ -89,7 +89,7 @@
                         <div class="float-end">
                           <p class="mb-0 me-5 d-flex align-items-center">
                             <span class="medium text-muted me-2">Order total:</span> <span
-                              class="lead font-weight-bold">${{ total_price|floatformat:2 }}</span>
+                              class="lead font-weight-bold">₹ {{ total_price|floatformat:2 }}</span>
                           </p>
                         </div>
             

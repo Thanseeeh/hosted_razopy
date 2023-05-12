@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+import datetime
 
 def get_account_model():
     return apps.get_model('admins', 'Category')
@@ -21,6 +22,30 @@ class Token(models.Model):
     author = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='token_author', null=True)
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+    
+
+class BidToken(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    description = models.TextField()
+    price = models.FloatField()
+    highest_price = models.FloatField()
+    bidded_user = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='bidded_user', null=True)
+    brand = models.CharField(max_length=100, null=True)
+    image = models.ImageField(null=True, blank=True)
+    category = models.ForeignKey('admins.Category', on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='bid_token_author', null=True)
+    timeout = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def time_remaining(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        time_elapsed = now - self.timeout
+        time_remaining = datetime.timedelta(minutes=1) - time_elapsed
+        return time_remaining.total_seconds()
+    
     def __str__(self):
         return self.name
     

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from .forms import TokenForm
+from .forms import TokenForm, BidTokenForm
 from django.apps import apps
 from .models import *
 from accounts.forms import Profileform
@@ -57,8 +57,12 @@ def items(request):
 
 
 #Token Bidding
+@login_required(login_url='/accounts/login_user/')
 def token_bidding(request):
-    return render(request, 'users_temp/token-bidding.html')
+    user = request.user
+    tokens = BidToken.objects.filter(is_active=True).order_by('id')
+    context = {'tokens': tokens}
+    return render(request, 'users_temp/token-bidding.html', context)
 
 
 #Catogories
@@ -132,6 +136,21 @@ def profile_created(request):
         tokens = Token.objects.filter(author=user)
         total_token = tokens.count()
         context = {'tokens': tokens, 'total_token': total_token, 'wallet': wallet}
+        return render(request, 'users_temp/profile.html', context)
+    else:
+        return redirect('/')
+    
+
+
+#Created tokens profile
+@login_required(login_url='/accounts/login_user/')
+def profile_bids(request):
+    if 'email' in request.session:
+        user = request.user
+        wallet = Wallet.objects.filter(user=user).first()
+        bid_tokens = BidToken.objects.filter(owner=user)
+        total_token = bid_tokens.count()
+        context = {'bid_tokens': bid_tokens, 'total_token': total_token, 'wallet': wallet}
         return render(request, 'users_temp/profile.html', context)
     else:
         return redirect('/')
@@ -343,14 +362,27 @@ def create(request):
         user_id = request.user.id
         user = Account.objects.get(id=user_id)
         if request.method == 'POST':
-            form = TokenForm(request.POST, request.FILES)
-            if form.is_valid():
-                token = form.save(commit=False)
-                token.owner = user
-                token.author = user
-                token.save()
-                messages.info(request, 'Token Created successfully')
-                return redirect('create')
+            if 'create' in request.POST:
+                form = TokenForm(request.POST, request.FILES)
+                if form.is_valid():
+                    token = form.save(commit=False)
+                    token.owner = user
+                    token.author = user
+                    token.save()
+                    messages.info(request, 'Token Created successfully')
+                    return redirect('create')
+                
+            if 'create-bid' in request.POST:
+                form = BidTokenForm(request.POST, request.FILES)
+                if form.is_valid():
+                    token = form.save(commit=False)
+                    token.owner = user
+                    token.author = user
+                    token.highest_price = token.price
+                    token.bidded_user = None
+                    token.save()
+                    messages.info(request, 'Bidding Token Created successfully')
+                    return redirect('create')
         else:
             form = TokenForm()
         context = {'form': form, 'user': user, 'user_id': user_id}
@@ -368,6 +400,15 @@ def single_item(request, id):
 
 
 
+#Single View of bidding tokens
+def bid_single_item(request, id):
+    product = BidToken.objects.get(id=id)
+    demand = product.highest_price - product.price
+    context = {'product': product, 'demand': demand}
+    return render(request, 'users_temp/single-bid-item.html', context)
+
+
+
 #Cancel Sale
 @login_required(login_url='/accounts/login_user/')
 def cancel_sale(request, id):
@@ -375,6 +416,18 @@ def cancel_sale(request, id):
     token.is_active = False
     token.save()
     return redirect('single_item', id=id)
+
+
+
+#Cancel Sale
+@login_required(login_url='/accounts/login_user/')
+def cancel_bid(request, id):
+    token = BidToken.objects.get(id=id)
+    token.is_active = False
+    token.highest_price = token.price
+    token.bidded_user = None
+    token.save()
+    return redirect('bid_single_item', id=id)
 
 
 
@@ -407,6 +460,33 @@ def sell(request, id):
     token.save()
     return redirect('single_item', id=id)
 
+
+
+#Bid Token
+@login_required(login_url='/accounts/login_user/')
+def bid(request, id):
+    token = BidToken.objects.get(id=id)
+    token.is_active = True
+    token.timeout = datetime.datetime.now(datetime.timezone.utc)
+    token.save()
+    return redirect('bid_single_item', id=id)
+
+
+
+#User bidding token
+def bidding(request, id):
+    bid_token = get_object_or_404(BidToken, id=id)
+    user = request.user
+    if request.method == 'POST':
+        bid = float(request.POST['bid'])
+        if bid < user.wallet_obj.balance:
+            if bid > bid_token.highest_price:
+                bid_token.highest_price = bid
+                bid_token.bidded_user = user
+                bid_token.save()
+        else:
+            messages.info(request, 'wallet doesnt have that much amount')
+    return redirect('bid_single_item', id=id)
 
 
 #Like token
@@ -568,3 +648,47 @@ def checkout_complete_transaction(request):
         commission = round(total_price * 0.035, 2)
         total = total_price + commission
         return render(request, 'users_temp/checkout.html', {'cart_items': cart_items, 'total': total, 'commission': commission})
+    
+
+
+#Complete transaction of Bidding tokens
+def accept_bid(request, id):
+    user = request.user
+    token = BidToken.objects.filter(id=id).first()
+    if token:
+        if user != token.owner:
+            messages.error(request, 'You do not have permission to accept this bid.')
+            return redirect('bid_single_item', id=id)
+        if not token.highest_price or not token.bidded_user:
+            messages.error(request, 'There are no bids to accept.')
+            return redirect('bid_single_item', id=id)
+
+        # Update wallets
+        bidded_user_wallet = Wallet.objects.get(user=token.bidded_user)
+        owner_wallet = Wallet.objects.get(user=token.owner)
+
+        if bidded_user_wallet.balance < token.highest_price:
+            messages.error(request, 'Bidded user does not have enough balance to accept this bid.')
+            return redirect('bid_single_item', id=id)
+        
+        amount_to_subtract = Decimal(str(token.highest_price))
+        bidded_user_wallet.balance -= amount_to_subtract
+        bidded_user_wallet.transaction_history.append(f"Paid {token.highest_price} to accept bid for token '{token.name}'")
+        bidded_user_wallet.save()
+
+        owner_wallet.balance += Decimal(token.highest_price)
+        owner_wallet.transaction_history.append(f"Received {token.highest_price} for token '{token.name}' from {token.bidded_user}")
+        owner_wallet.save()
+
+        # Update token
+        token.owner = token.bidded_user
+        token.price = token.highest_price
+        token.bidded_user = None
+        token.is_active = False
+        token.save()
+
+        messages.success(request, f'Bid for token {token.name} has been accepted.')
+        return redirect('bid_single_item', id=id)
+    else:
+        messages.error(request, 'Token not found.')
+        return redirect('home')

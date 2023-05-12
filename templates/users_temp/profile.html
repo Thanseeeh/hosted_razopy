@@ -46,12 +46,18 @@ Razopy-Profile
                         <div class="d-flex justify-content-between align-items-center mb-4">
                         <a href="{% url 'profile' %}" style="text-decoration: none; color: black"><p class="lead fw-normal mb-0">Owned Tokens</p></a>
                         <a href="{% url 'profile_created' %}" style="text-decoration: none; color: black"><p class="lead fw-normal mb-0">Created Tokens</p></a>
+                        <a href="{% url 'profile_bids' %}" style="text-decoration: none; color: black"><p class="lead fw-normal mb-0">Bidding Tokens</p></a>
                         </div>
                         
                         <div class="row g-2">
                             {% for i in tokens %}
                             <div class="col-md-4 col-sm-6 mb-2">
                                 <a href="{% url 'single_item' i.id %}"><img src="{{ i.image.url}}" style="height: 276.55px" alt="image 1" class="w-100 rounded-3"></a>
+                            </div>
+                            {% endfor %}
+                            {% for i in bid_tokens %}
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <a href="{% url 'bid_single_item' i.id %}"><img src="{{ i.image.url}}" style="height: 276.55px" alt="image 1" class="w-100 rounded-3"></a>
                             </div>
                             {% endfor %}
                         </div>
