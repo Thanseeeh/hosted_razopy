@@ -161,10 +161,7 @@ EMAIL_HOST_PASSWORD='glosbpxancnwmbcc'
 EMAIL_USE_TLS=True
 
 
-#twillio conf
-TWILIO_ACCOUNT_SID = 'AC533d11df9be75ebc56c5b24db413f828'
-TWILIO_AUTH_TOKEN = 'fd54d9c138eac633edeb07231f22b079'
-TWILIO_PHONE_NUMBER = '+15677042685'
+
 
 
 #razor pay integration
