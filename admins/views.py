@@ -117,7 +117,8 @@ def admin_wallet(request):
                     commission_profit += float(transaction.split('Received ')[1].split(' commission')[0])
                     commission_and_sales_profit += float(transaction.split('Received ')[1].split(' commission')[0])
             else:
-                commission_and_sales_profit -= float(transaction.split('Paid ')[1].split(' for token')[0])
+                if 'Paid ' in transaction and ' for token' in transaction:
+                    commission_and_sales_profit -= float(transaction.split('Paid ')[1].split(' for token')[0])
         except ValueError:
             pass
     commission_and_sales_profit = sales_profit + commission_profit
